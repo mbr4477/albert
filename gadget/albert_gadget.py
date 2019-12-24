@@ -20,7 +20,6 @@ logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='%(message)s')
 logging.getLogger().addHandler(logging.StreamHandler(sys.stderr))
 logger = logging.getLogger(__name__)
 
-
 class MindstormsGadget(AlexaGadget):
     """
     A Mindstorms gadget that performs experiments based on voice commands.

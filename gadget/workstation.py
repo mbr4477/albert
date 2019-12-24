@@ -5,8 +5,8 @@ from nxt.sensor import *
 import time
 from nxt.motor import * 
 
-TILT_DEGREES = 150
-TILT_MOTOR_POWER = 25
+TILT_DEGREES = 110
+TILT_MOTOR_POWER = 15
 PLATE_ROTATION_DEGREES = 810
 ROTATE_MOTOR_POWER = 25
 

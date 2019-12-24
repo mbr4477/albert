@@ -81,6 +81,11 @@ A wrist join enables this rotation, but care must be taken to align the wrist ro
 ### Repeatable Base Positions
 The arm must be able to repeatably position itself at the sterile rack, workstation, and storage rack. Originally, this was done with dead reckoning, but for improved performance the EV3 color sensor is used to detect colored stripes as the arm base rotates.
 
+### Lifting the Dish Lid
+Lifting the dish lid is hard. The tolerance is only about +/- 0.25 cm in my estimate, which is tough to achieve with LEGO gearing. Although ALBERT was able to lift the lid by gripping the edge several times, it was not consistent. THe lid would often pivot in the gripper, preventing it from being replaced on the dish, or slide out of the gripper entirely.
+
+The solution was to slightly modify the dish lid to add a "handle" that the gripper could easily hold on to. This handle was made of two bevel gears and was hot-glued to the dish lid.
+
 ## Software Architecture
 The software stack is divided into two major sections: the Alexa-hosted Node.js skill and the Python Alexa Gadget code on the EV3.
 

@@ -12,10 +12,14 @@ from ev3dev2.sensor.lego import ColorSensor
  
 from workstation import Workstation
 
-SPEEDS = [20, 10, 20]
-DOWN = -0.93
+# Define the speeds for each joint
+SPEEDS = [50, 15, 50]
+
+# Define the should down and wrist horizontal rotations
+DOWN = -0.97
 HORZ = 1.23
-LID_VBIAS = 0.06
+LID_VBIAS = 0.18
+STRIPE_BIAS = 0.07 # amount to center over the stripe
 
 # Keypoints
 # VERT - gripper vertical, dish horizontal
@@ -33,7 +37,7 @@ GRIP_CLOSED = 0.075
 
 STERILE_COLOR = ColorSensor.COLOR_RED
 STORE_COLOR = ColorSensor.COLOR_YELLOW
-STATION_COLOR = ColorSensor.COLOR_BLACK
+STATION_COLOR = ColorSensor.COLOR_BLUE
 VALID_COLORS = [STERILE_COLOR, STORE_COLOR, STATION_COLOR]
 
 MOVE_PAUSE = 0.5
@@ -47,7 +51,6 @@ class ALBERT(object):
         self.arm_shoulder  = LargeMotor(OUTPUT_C)
         self.arm_wrist = LargeMotor(OUTPUT_B)
         self.arm_gripper = MediumMotor(OUTPUT_A)
-        self.reset_all_motors()
         self.station = Workstation()
         self.color_sensor = ColorSensor(INPUT_1)
         self.find_indicator()
@@ -56,6 +59,8 @@ class ALBERT(object):
 
     def find_indicator(self):
         ''' Search for a valid color indicator. '''
+        if self.color_sensor.color in VALID_COLORS:
+            return
         self.arm_base.on(10)
         while self.color_sensor.color not in VALID_COLORS:
             pass
@@ -72,10 +77,12 @@ class ALBERT(object):
         '''
         Rotate from one color indicator to another.
         Color order is:
-            YELLOW <--> BLACK   <--> RED
+            YELLOW <--> BLUE   <--> RED
             STORE  <--> STATION <--> STERILE
         '''
         current_color = self.color_sensor.color
+        if current_color == color:
+            return
         direction = 1
         if (current_color == STATION_COLOR and color == STERILE_COLOR) or current_color == STORE_COLOR:
             direction = -1
@@ -83,6 +90,7 @@ class ALBERT(object):
         while self.color_sensor.color != color:
             pass
         self.arm_base.stop()
+        self.arm_base.on_for_rotations(SPEEDS[0], direction*STRIPE_BIAS)
 
     def make_plate(self):
         ''' Sequence to make a plate. '''
