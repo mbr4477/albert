@@ -92,31 +92,102 @@ The Alexa skill code can be browsed in the `skill` directory. Several key intent
 - `GadgetEventHandler` - This handler catches the events returned back from the EV3 gadget to report when a plate has been made or the status of a previously made plate.
 
 ### EV3 Python Gagdet Code
-The gadget code is designed to receive gadget commands from the cloud-based Alexa skill and activate the ALBERT. This includes a class to encapsulate ALBERT's capability in `albert.py` and a gadget class based off the sample code, written in `albert_gadget.py`. The gadget code is fairly self-explanatory. The ALBERT control code makes extensive use of keypoints defined for the manipulator (arm) to concisely encode the sequence of motions required for each task. These tasks can then be triggered from the gagdet code.
+The gadget code is designed to receive gadget commands from the cloud-based Alexa skill and activate the ALBERT. This includes a class to encapsulate ALBERT's capability in `albert.py` and a gadget class based off the sample code, written in `albert_gadget.py`. The gadget code is fairly self-explanatory. The ALBERT control code makes extensive use of keypoints defined for the manipulator (arm) to concisely encode the sequence of motions required for each task. These tasks can then be triggered from the gadget code.
 
 The `workstation.py` file leverages the `nxt-python` library to remote control the NXT over a USB connection. The swab and check plate operations are simple, moving the head into position and rotating the dish if necessary.
 
 ## Build Instructions
+All the CAD models were created using [Studio](https://www.bricklink.com/v3/studio/download.page).
 ### 1. Build the Arm
 ![Arm](models/arm.png)
+The arm CAD model can be found in `models/arm.io`.
 ### 2. Build the Workstation
 ![Workstation](models/workstation.png)
+Build the workstation using `models/workstation.io`.
+
 ### 3. Build the TETRIX Base and Plate Holders
 ![Plate Holder](models/plate_holder.png)
-### 4. Setup ev3dev
-- Install `pip3`: `sudo apt install python3-pip`
-- Install `pyusb`: `sudo pip3 install pyusb`
-- Install `nxt-python`
-  ```
-  wget https://github.com/ev3dev/nxt-python/archive/ev3dev-stretch.zip
-  unzip ev3dev-stretch
-  cd nxt-python-ev3dev-stretch
-  python3 setup.py install
-  ```
-### 5. Setup the Alexa Skill (Node.js)
-### 6. Code the EV3 Arm & Workstation (Python)
+Build two plate holders (mirror images) using `models/plate_holder.io`. 
+
+To create the platform with colored stripes, I used a section of foam-core board. Align the arm with each of the sterile rack, workstation, and storage rack, and place a strip of red, black, and yellow colored tape under the sensor, respectively. 
+
+### 4. Setup the Software Environment
+1. Download ev3dev from the [download page](https://www.ev3dev.org/downloads/)
+2. Flash the image to an SD card using [Etcher](https://etcher.io/)
+3. Connect the EV3 brick to your computer with a USB A-to-Mini-B cable and [enable USB internet sharing](https://www.ev3dev.org/docs/tutorials/connecting-to-the-internet-via-usb/).
+4. On your computer, [install Visual Studio Code](https://code.visualstudio.com/) from Microsoft. 
+5. Once installed, open the extensions panel (`Ctrl+Shift+X`). Then search for and install the ev3dev-browser extension.
+6. On your computer, download the source code from GitHub. If you are unfamiliar with git, just download the code as a zip file using the button at the top right of this page. Advanced users can clone this repository.
+7. In order to communicate with the NXT workstation, `nxt-python` must be installed **on the EV3** (not your computer). To do this, you will need to run a few commands in the EV3 brick terminal. 
+   1. To access this terminal, expand the "ev3dev Device Browser" group at the bottom of the Explorer panel (`Ctrl+Shift+E`) and connect to your brick by clicking "Click here to connect a device."
+   2. Once connected, right click the ev3dev device and select "Open SSH Terminal."
+   3. Run the following commands
+        ```bash
+        # install pip3 (python3 package manager)
+        sudo apt install python3-pip
+
+        # install pyusb for USB connection to NXT
+        sudo pip3 install pyusb
+
+        # install nxt-python (python3 beta)
+        wget https://github.com/ev3dev/nxt-python/archive/ev3dev-stretch.zip
+        unzip ev3dev-stretch
+        cd nxt-python-ev3dev-stretch
+        python3 setup.py install # you may need to prepend `sudo`
+        ```
+### 5. Setup the Alexa Gadget
+(These steps are adapted from the [LEGO MINDSTORMS Voice Challenge Mission 1](https://www.hackster.io/alexagadgets/lego-mindstorms-voice-challenge-mission-1-f31925) example)
+1. Create an [Amazon Developer](https://developer.amazon.com/) account if you do not yet have one
+2. Go to the [Alexa Voice Service](https://developer.amazon.com/alexa/console/avs/home) page and click the "PRODUCTS" button.
+3. Click the "CREATE PRODUCT" button at the top right of the page.
+4. Name the product "MINDSTORMS EV3" with ID of "EV3_01". The product type can be "Alexa Gadget" with a category of "Animatronic or Figure". Fill out a description, choose "No" for intending commercial distribution, and "No" for if it is a child product. Finishing clicking through the product creation.
+5. Click on your new device in the list of devices in the console.
+6. On the product's page, take note of the Amazon ID and Alexa Gadget Secret codes. You will need them later.
+
+### 6. Code the Alexa Skill
+(These steps are adapted from the [LEGO MINDSTORMS Voice Challenge Mission 3](https://www.hackster.io/alexagadgets/lego-mindstorms-voice-challenge-mission-3-4ed812#toc-create-your-alexa-skill-2) example.)
+1. Go to the [Alexa Developer Console](https://developer.amazon.com/alexa/console/ask) and click the blue  "Create Skill" button on the right hand side of the page.
+2. Name the skill "ALBERT" and use the default selected "Custom" model. At the bottom of the page, choose "Alexa-Hosted (Node.js)". Finish clicking through the skill creation pages.
+3. Enable the custom interface controller by selecting "Interfaces" in the left-hand menu, and turning on "Custom Interface Controller." Save the updates using the button at the top of the page.
+4. Next, setup the interaction model by clicking the "JSON Editor" item in the left-hand menu (under the "Interaction Model" heading) and drag and drop the `model.json` file from the `skill` folder in the ALBERT source code. Save and build the model using the buttons at the top of the page.
+5. Click the "Code" tab at the very top of the screen. Create the following files and copy and paste the contents from the corresponding ALBERT source files in the `skill/lambda` directory.
+   - `common.js` - Common intent handling, such as for help or cancel actions
+   - `index.js` - Contains the main intent and event handlers
+   - `package.json` - Package information
+   - `util.js` - Utility code (from Mission 3)
+6. Click "Save" and then "Deploy" to activate your skill!
+7. Create a `albert_gadget.ini` file in the `gadget` directory with the following contents:
+   ```ini
+   [GadgetSettings]
+   amazonId = YOUR_GADGET_AMAZON_ID
+   alexaGadgetSecret = YOUR_GADGET_SECRET
+
+   [GadgetCapabilities]
+   Custom.Mindstorms.Gadget = 1.0
+   ```
+   The ID and secret are the values from step 5.
+
+### 7. Downloading and Running
+Almost there! In the VS Code Explorer panel (`Ctrl+Shift+E`) find the ev3dev device at the bottom of the screen. Click the download button near the left edge of the ev3dev Device Browser header.
+> If you don't see this button, make sure you are connected to your EV3 brick
+
+Once your files have been copied over, find the `albert/gadget/albert_gadget.py` file, right-click it, and select "Run."
+
+If this is your first time running, you will need to pair the EV3 with your Alexa device over Bluetooth. You can do this through the Alexa app. Make sure that Bluetooth is turned on for the EV3. 
+
+If you run into issues with Bluetooth being unavailable on the EV3, see [this Github issue](https://github.com/ev3dev/ev3dev/issues/1314). TL;DR: Run these lines on your EV3 terminal (same terminal from which you installed `nxt-python`)
+
+```bash
+sudo systemctl mask systemd-rfkill.service
+sudo systemctl mask systemd-rfkill.socket 
+```
+
+and then restart your EV3.
 
 ## About Me
 <img src="https://mruss.dev/static/814a18529ab944c8d9c9f59c6e6c30b8/5b62b/profile.jpg" style="width: 75px; height 75px; border-radius:100%">
 
-Hey! I'm Matthew, and I'm studying machine learning for my Ph.D. at the University of Kentucky and first worked with LEGO MINDSTORMS through the NXT over 10 years ago. Get to know me more on my blog, [mruss.dev](https://mruss.dev)
+Hey! I'm Matthew, and I'm studying machine learning for my Ph.D. at the University of Kentucky and first worked with LEGO MINDSTORMS through the NXT over 10 years ago. Get to know me more on my blog, [mruss.dev](https://mruss.dev).
+
+---
+These instructions are current as of 2019-12-24.

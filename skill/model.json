@@ -1,0 +1,55 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "albert lab",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "MakePlateIntent",
+                    "slots": [],
+                    "samples": [
+                        "make a plate",
+                        "swab a plate",
+                        "use this sample",
+                        "create an experiment",
+                        "create an experiment from this sample",
+                        "start an experiment"
+                    ]
+                },
+                {
+                    "name": "CheckPlateIntent",
+                    "slots": [
+                        {
+                            "name": "PlateID",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "check plate {PlateID}",
+                        "how is plate {PlateID}",
+                        "check number {PlateID}",
+                        "how is number {PlateID}",
+                        "collect data for plate {PlateID}",
+                        "collect data for number {PlateID}"
+                    ]
+                }
+            ],
+            "types": []
+        }
+    }
+}
