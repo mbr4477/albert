@@ -143,8 +143,6 @@ const GadgetEventHandler = {
         if (name === 'plate_finished') {
           return handlerInput.responseBuilder
             .speak(`Plate ${payload.plate_number} was completed and placed in storage. You can retrieve it by asking me to check plate ${payload.plate_number}.`)
-            .withShouldEndSession(false)
-            .reprompt('Can I help you with anything else?')
             .getResponse();
         }
         else if (name === 'plate_status') {

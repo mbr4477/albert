@@ -16,9 +16,9 @@ from workstation import Workstation
 SPEEDS = [50, 15, 50]
 
 # Define the should down and wrist horizontal rotations
-DOWN = -0.97
+DOWN = -0.95
 HORZ = 1.23
-LID_VBIAS = 0.18
+LID_VBIAS = 0.16
 STRIPE_BIAS = 0.07 # amount to center over the stripe
 
 # Keypoints
@@ -29,6 +29,8 @@ KP_UP_HORZ = [0, HORZ]
 KP_DOWN_VERT = [DOWN, 0]
 KP_DOWN_HORZ = [DOWN, HORZ]
 KP_DOWN_HORZ_LID = [DOWN + LID_VBIAS, HORZ]
+KP_UP_VERT_INVERT = [0, 2*HORZ]
+KP_DOWN_VERT_INVERT = [DOWN, 2*HORZ]
 
 # Gripper Constants
 GRIP_WIDE = -0.20
@@ -102,14 +104,14 @@ class ALBERT(object):
 
     def check_plate(self):
         ''' Sequence to check plate. '''
-        self.get_plate(from_storage=True)
+        self.get_plate(from_storage=True, upside_down=True)
         self.move_to_keypoint(KP_UP_HORZ)
         refl = self.station.check_status()
         self.move_to_keypoint(KP_DOWN_HORZ)
-        self.store_plate()
+        self.store_plate(is_upside_down=True)
         return refl
 
-    def get_plate(self, from_storage=False):
+    def get_plate(self, from_storage=False, upside_down=False):
         ''' 
         Sequence to get a plate and place it in the workstation.
         Post-conditions
@@ -125,8 +127,10 @@ class ALBERT(object):
         self.set_gripper(GRIP_CLOSED)
         self.move_to_keypoint(KP_UP_HORZ)
         self.rotate_base(STATION_COLOR)
-        self.move_to_keypoint(KP_UP_VERT)
-        self.move_to_keypoint(KP_DOWN_VERT)
+        dest_up = KP_UP_VERT_INVERT if upside_down else KP_UP_VERT
+        dest_down = KP_DOWN_VERT_INVERT if upside_down else KP_DOWN_VERT
+        self.move_to_keypoint(dest_up)
+        self.move_to_keypoint(dest_down)
         self.set_gripper(GRIP_WIDE)
         self.move_to_keypoint(KP_DOWN_HORZ)
         
@@ -163,9 +167,10 @@ class ALBERT(object):
         ''' Call the Workstation swab routine. '''
         self.station.swab()
 
-    def store_plate(self):
+    def store_plate(self, is_upside_down=False):
         ''' Sequence to store a plate. '''
-        self.move_to_keypoint(KP_DOWN_VERT)
+        src_down = KP_DOWN_VERT_INVERT if is_upside_down else KP_DOWN_VERT
+        self.move_to_keypoint(src_down)
         self.set_gripper(GRIP_CLOSED)
         self.move_to_keypoint(KP_UP_HORZ)
         self.rotate_base(STORE_COLOR)
