@@ -98,7 +98,9 @@ The `workstation.py` file leverages the `nxt-python` library to remote control t
 
 ## Build Instructions
 ### 1. Build the Arm
+![Arm](models/arm.png)
 ### 2. Build the Workstation
+![Workstation](models/workstation.png)
 ### 3. Build the TETRIX Base and Plate Holders
 ![Plate Holder](models/plate_holder.png)
 ### 4. Setup ev3dev
@@ -112,8 +114,7 @@ The `workstation.py` file leverages the `nxt-python` library to remote control t
   python3 setup.py install
   ```
 ### 5. Setup the Alexa Skill (Node.js)
-### 6. Code the EV3 Arm (Python)
-### 7. Code the Workstation (NXT-G)
+### 6. Code the EV3 Arm & Workstation (Python)
 
 ## About Me
 <img src="https://mruss.dev/static/814a18529ab944c8d9c9f59c6e6c30b8/5b62b/profile.jpg" style="width: 75px; height 75px; border-radius:100%">
