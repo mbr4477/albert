@@ -1,0 +1,9 @@
+# ignore the alexa gadget configuration file
+# to prevent committing the ID and secret
+*.ini
+
+# dropbox meta
+.dropbox
+
+# any mac files
+.DS_Store/
