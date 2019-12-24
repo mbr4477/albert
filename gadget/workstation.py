@@ -12,12 +12,14 @@ ROTATE_MOTOR_POWER = 25
 
 class Workstation(object):
     def __init__(self):
+        ''' Initialize the workstation remote control. '''
         self.brick = nxt.locator.find_one_brick(method=nxt.locator.Method(bluetooth=False))
         self.color = Color20(self.brick, PORT_4)
         self.tilt_motor = Motor(self.brick, PORT_B)
         self.rotate_motor = Motor(self.brick, PORT_C)
 
     def get_reflectivity(self):
+        ''' Measure the reflectivity of the dish using the Color Sensor. '''
         return self.color.get_reflected_light(Type.COLORRED) / 512.0
 
     def swab(self):

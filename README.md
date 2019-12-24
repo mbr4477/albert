@@ -1,14 +1,4 @@
-<div style="text-align: center;">
-    <img src="logo.png" width="500"/>
-</div>
-
-[Video Goes Here]
-- background
-- problem statement
-- solution -- ALBERT
-- hardware overview and demonstration (montage of operation, and Studio CAD software)
-- software overview montage of coding and downloading (include NXT-G)
-- application areas and importance (intuitive voice control and Alexa)
+![Logo](logo.png)
 
 # Alexa-controlled Lego Biological ExpeRimenT (ALBERT) <!-- omit in toc -->
 
@@ -86,6 +76,9 @@ Lifting the dish lid is hard. The tolerance is only about +/- 0.25 cm in my esti
 
 The solution was to slightly modify the dish lid to add a "handle" that the gripper could easily hold on to. This handle was made of two bevel gears and was hot-glued to the dish lid.
 
+![lid_handles](lid_handles.jpg)
+*Prototype duct tape handle and the final hot-glued bevel gear handles*
+
 ## Software Architecture
 The software stack is divided into two major sections: the Alexa-hosted Node.js skill and the Python Alexa Gadget code on the EV3.
 
@@ -96,7 +89,7 @@ The Alexa skill code can be browsed in the `skill` directory. Several key intent
 - `CheckPlateIntent` - This intent sends the "check plate" directive to the EV3 gadget along with the number of the plate to check. In most cases, this will be one, but it one be extended to devices with more than one storage rack in the future.
 - `GadgetEventHandler` - This handler catches the events returned back from the EV3 gadget to report when a plate has been made or the status of a previously made plate.
 
-### EV3 Python Gagdet Code
+### EV3 Python Gadget Code
 The gadget code is designed to receive gadget commands from the cloud-based Alexa skill and activate the ALBERT. This includes a class to encapsulate ALBERT's capability in `albert.py` and a gadget class based off the sample code, written in `albert_gadget.py`. The gadget code is fairly self-explanatory. The ALBERT control code makes extensive use of keypoints defined for the manipulator (arm) to concisely encode the sequence of motions required for each task. These tasks can then be triggered from the gadget code.
 
 The `workstation.py` file leverages the `nxt-python` library to remote control the NXT over a USB connection. The swab and check plate operations are simple, moving the head into position and rotating the dish if necessary.
@@ -114,7 +107,7 @@ Build the workstation using `models/workstation.io`.
 ![Plate Holder](models/plate_holder.png)
 Build two plate holders (mirror images) using `models/plate_holder.io`. 
 
-To create the platform with colored stripes, I used a section of foam-core board. Align the arm with each of the sterile rack, workstation, and storage rack, and place a strip of red, black, and yellow colored tape under the sensor, respectively. 
+To create the platform with colored stripes, I used a section of foam-core board. Align the arm with each of the sterile rack, workstation, and storage rack, and place a strip of red, blue, and yellow colored tape under the sensor, respectively. 
 
 ### 4. Setup the Software Environment
 1. Download ev3dev from the [download page](https://www.ev3dev.org/downloads/)
